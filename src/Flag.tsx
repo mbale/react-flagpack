@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import type { Flags } from 'flagpack-core'
 import './Flag.scss'
 
@@ -20,19 +20,36 @@ const Flag: React.FC<Props> = ({
   hasDropShadow = false,
   hasBorderRadius = true,
   className
-}: Props) => (
-  <div
-    className={
-      `flag
+}: Props) => {
+  const [src, setSrc] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    const loadImage = async() => {
+      // @ts-ignore
+      const loaded = await import(`./flags/${size}/${code}.svg`)
+
+      setSrc(loaded)
+    }
+
+    loadImage()
+  })
+
+  return (
+    <div
+      className={
+        `flag
     ${gradient}
     size-${size}
     ${hasBorder ? 'border' : ''}
     ${hasDropShadow ? 'drop-shadow' : ''}
     ${hasBorderRadius ? 'border-radius' : ''}
     ${className ? className.replace(/\s\s+/g, ' ').trim() : ''}`
-    }>
-    <img src={require(`./flags/${size}/${code}.svg`).default} />
-  </div>
-)
+      }>
+      {
+        src && <img src={src} />
+      }
+    </div>
+  )
+}
 
 export default Flag

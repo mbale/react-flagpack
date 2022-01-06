@@ -40,13 +40,20 @@ if (env === prod) {
   plugins.push(minify())
 }
 
+/**
+ * @type {import('rollup').RollupOptions}
+ * */
 export default {
   plugins,
   external: ['react', 'flagpack-core'],
   input: './src/main.ts',
-  output: {
+  output: [{
     file: 'dist/react-flag-rollup.cjs.js',
     format: 'cjs',
     exports: 'auto'
-  }
+  }, {
+    file: 'dist/react-flag-rollup.esm.js',
+    format: 'esm',
+    exports: 'auto'
+  }]
 }
