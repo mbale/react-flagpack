@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import type { Flags } from 'flagpack-core'
 import './Flag.scss'
 
@@ -21,17 +21,17 @@ const Flag: React.FC<Props> = ({
   hasBorderRadius = true,
   className
 }: Props) => {
-  const [src, setSrc] = React.useState<string | null>(null)
+  const [SVGComponent, setSVGComponent] = React.useState<React.FC<React.SVGProps<SVGSVGElement>> | null>(null)
 
   React.useEffect(() => {
-    const loadImage = async() => {
+    const loadComponent = async() => {
       // @ts-ignore
-      const loaded = await import(`./flags/${size}/${code}.svg`)
+      const loadedComponent = await import(`./flags/${size}/${code}.svg`).then(m => m.default)
 
-      setSrc(loaded)
+      setSVGComponent(loadedComponent)
     }
 
-    loadImage()
+    loadComponent()
   })
 
   return (
@@ -46,7 +46,7 @@ const Flag: React.FC<Props> = ({
     ${className ? className.replace(/\s\s+/g, ' ').trim() : ''}`
       }>
       {
-        src && <img src={src} />
+        SVGComponent && <SVGComponent />
       }
     </div>
   )
